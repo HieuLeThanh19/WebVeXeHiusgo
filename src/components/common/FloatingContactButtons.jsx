@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   FaArrowUp,
   FaCommentDots,
@@ -7,13 +7,13 @@ import {
   FaPhoneAlt,
 } from 'react-icons/fa'
 import { SiZalo } from 'react-icons/si'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { t } from '../../content/siteText'
 import '../../styles/floating-contact.scss'
 
 function FloatingContactButtons() {
   const [isExpanded, setIsExpanded] = useState(false)
   const [activePanel, setActivePanel] = useState(null)
-  const { t } = useLanguage()
+
   const contactActions = [
     {
       id: 'location',
@@ -41,13 +41,9 @@ function FloatingContactButtons() {
     },
   ]
 
-  const panelTitle = useMemo(() => {
-    if (!activePanel) {
-      return ''
-    }
-
-    return contactActions.find((action) => action.id === activePanel)?.label ?? ''
-  }, [activePanel])
+  const panelTitle = activePanel
+    ? contactActions.find((action) => action.id === activePanel)?.label ?? ''
+    : ''
 
   const toggleMenu = () => {
     setIsExpanded((currentState) => {

@@ -1,15 +1,15 @@
-﻿import { useState } from 'react'
+/* eslint-disable react/prop-types */
+import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { FaBus, FaUser, FaBell, FaPhoneAlt } from 'react-icons/fa'
+import { FaBell, FaBus, FaPhoneAlt, FaUser } from 'react-icons/fa'
 import AuthModal from './AuthModal'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { t } from '../../content/siteText'
 import '../../styles/header.scss'
 
 const Header = ({ theme, onToggleTheme }) => {
   const isDarkTheme = theme === 'dark'
   const [authOpen, setAuthOpen] = useState(false)
   const [authMode, setAuthMode] = useState('login')
-  const { language, t, toggleLanguage } = useLanguage()
 
   const openLogin = () => {
     setAuthMode('login')
@@ -56,18 +56,6 @@ const Header = ({ theme, onToggleTheme }) => {
 
               <div className="header-actions">
                 <button
-                  className="btn-icon btn-language-toggle"
-                  type="button"
-                  onClick={toggleLanguage}
-                  aria-label={t('header.switchLanguage')}
-                  title={t('header.switchLanguage')}
-                >
-                  <span className={`flag-pill${language === 'vi' ? ' is-vi' : ' is-en'}`} aria-hidden="true">
-                    <span className="flag-pill__flag">🇻🇳</span>
-                    <span className="flag-pill__flag">🇬🇧</span>
-                  </span>
-                </button>
-                <button
                   className="btn-icon btn-theme-toggle"
                   type="button"
                   onClick={onToggleTheme}
@@ -88,11 +76,7 @@ const Header = ({ theme, onToggleTheme }) => {
         </div>
       </header>
 
-      <AuthModal
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        defaultMode={authMode}
-      />
+      <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} defaultMode={authMode} />
     </>
   )
 }

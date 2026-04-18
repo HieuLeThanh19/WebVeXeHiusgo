@@ -1,11 +1,9 @@
-﻿// src/components/home/PopularRoutes.jsx
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaBus } from 'react-icons/fa'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { HiOutlineShieldCheck, HiOutlineTag, HiOutlineTicket } from 'react-icons/hi'
 import { getPopularRoutes } from '../../services/supabaseClient'
-import { useLanguage } from '../../i18n/LanguageContext'
 
 const promoBanners = [
   '/picture/20260409_0015_image.png',
@@ -16,41 +14,60 @@ const promoBanners = [
   '/picture/1775668820107.png_image.png',
 ]
 
+const copy = {
+  platformTitle: 'Nền tảng đặt vé thông minh cho mọi hành trình',
+  promoEyebrow: 'Ưu đãi nổi bật',
+  promoTitle: 'Banner khuyến mãi và voucher đang áp dụng',
+  promoPrevious: 'Banner trước',
+  promoNext: 'Banner tiếp theo',
+  bannerNavigation: 'Điều hướng banner',
+  promoImageAlt: 'Banner ưu đãi',
+  highlights: {
+    operatorsTitle: 'Kết nối nhà xe uy tín',
+    operatorsDescription: 'Tổng hợp nhiều nhà xe chất lượng trên cùng một nền tảng để bạn dễ dàng so sánh và lựa chọn.',
+    bookingTitle: 'Đặt chỗ nhanh gọn',
+    bookingDescription: 'Tìm chuyến, chọn ghế, thanh toán và nhận vé điện tử chỉ trong vài bước đơn giản.',
+    availabilityTitle: 'Thông tin minh bạch',
+    availabilityDescription: 'Lịch trình, giá vé, điểm đón trả và tình trạng chỗ trống được cập nhật rõ ràng.',
+    offersTitle: 'Nhiều ưu đãi hấp dẫn',
+    offersDescription: 'Liên tục có voucher, chương trình khuyến mãi và deal tốt cho các tuyến phổ biến.',
+  },
+}
+
 const PopularRoutes = () => {
   const [routes, setRoutes] = useState([])
   const [activeBanner, setActiveBanner] = useState(0)
   const [isCarouselPaused, setIsCarouselPaused] = useState(false)
   const [slidesPerView, setSlidesPerView] = useState(3)
   const navigate = useNavigate()
-  const { t } = useLanguage()
   const resumeTimeoutRef = useRef(null)
   const maxBannerIndex = Math.max(promoBanners.length - slidesPerView, 0)
   const platformHighlights = [
     {
       id: 'operators',
-      title: t('popularRoutes.highlights.operatorsTitle'),
-      description: t('popularRoutes.highlights.operatorsDescription'),
+      title: copy.highlights.operatorsTitle,
+      description: copy.highlights.operatorsDescription,
       icon: FaBus,
       accentClass: 'is-blue',
     },
     {
       id: 'booking',
-      title: t('popularRoutes.highlights.bookingTitle'),
-      description: t('popularRoutes.highlights.bookingDescription'),
+      title: copy.highlights.bookingTitle,
+      description: copy.highlights.bookingDescription,
       icon: HiOutlineTicket,
       accentClass: 'is-amber',
     },
     {
       id: 'availability',
-      title: t('popularRoutes.highlights.availabilityTitle'),
-      description: t('popularRoutes.highlights.availabilityDescription'),
+      title: copy.highlights.availabilityTitle,
+      description: copy.highlights.availabilityDescription,
       icon: HiOutlineShieldCheck,
       accentClass: 'is-green',
     },
     {
       id: 'offers',
-      title: t('popularRoutes.highlights.offersTitle'),
-      description: t('popularRoutes.highlights.offersDescription'),
+      title: copy.highlights.offersTitle,
+      description: copy.highlights.offersDescription,
       icon: HiOutlineTag,
       accentClass: 'is-rose',
     },
@@ -104,12 +121,12 @@ const PopularRoutes = () => {
       setActiveBanner((currentIndex) => {
         if (currentIndex >= maxBannerIndex) {
           direction = -1
-          return maxBannerIndex - 1
+          return Math.max(maxBannerIndex - 1, 0)
         }
 
         if (currentIndex <= 0) {
           direction = 1
-          return 1
+          return Math.min(1, maxBannerIndex)
         }
 
         return currentIndex + direction
@@ -152,7 +169,7 @@ const PopularRoutes = () => {
       <div className="container">
         <div className="platform-overview">
           <div className="section-heading">
-            <h2>{t('popularRoutes.platformTitle')}</h2>
+            <h2>{copy.platformTitle}</h2>
           </div>
 
           <div className="platform-overview__grid">
@@ -178,17 +195,17 @@ const PopularRoutes = () => {
         <div className="promo-carousel">
           <div className="promo-carousel__header">
             <div>
-              <span className="promo-carousel__eyebrow">{t('popularRoutes.promoEyebrow')}</span>
-              <h3>{t('popularRoutes.promoTitle')}</h3>
+              <span className="promo-carousel__eyebrow">{copy.promoEyebrow}</span>
+              <h3>{copy.promoTitle}</h3>
             </div>
 
-            <div className="promo-carousel__controls" aria-label={t('home.bannerNavigation')}>
+            <div className="promo-carousel__controls" aria-label={copy.bannerNavigation}>
               <button
                 type="button"
                 className="promo-carousel__control"
                 onClick={showPreviousBanner}
                 disabled={activeBanner === 0}
-                aria-label={t('popularRoutes.promoPrevious')}
+                aria-label={copy.promoPrevious}
               >
                 <FiChevronLeft />
               </button>
@@ -197,7 +214,7 @@ const PopularRoutes = () => {
                 className="promo-carousel__control"
                 onClick={showNextBanner}
                 disabled={activeBanner >= maxBannerIndex}
-                aria-label={t('popularRoutes.promoNext')}
+                aria-label={copy.promoNext}
               >
                 <FiChevronRight />
               </button>
@@ -213,7 +230,7 @@ const PopularRoutes = () => {
                 <article key={banner} className="promo-carousel__slide">
                   <img
                     src={banner}
-                    alt={t('popularRoutes.promoImageAlt', { index: index + 1 })}
+                    alt={`${copy.promoImageAlt} ${index + 1}`}
                     className="promo-carousel__image"
                     loading="lazy"
                   />
@@ -224,7 +241,7 @@ const PopularRoutes = () => {
         </div>
 
         <div className="routes-grid">
-          {routes.map(route => (
+          {routes.map((route) => (
             <button key={route.id} onClick={() => handleClick(route)} className="route-link">
               {route.label}
             </button>

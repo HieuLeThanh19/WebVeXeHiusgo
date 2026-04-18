@@ -1,20 +1,20 @@
-import { useRef, useState } from 'react'
+ï»¿import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { APP_LOCALE, t } from '../../content/siteText'
 
 const SAMPLE_ROUTES = [
-  { id: 1, label: 'Sài Gòn ? Nha Trang', price: 120000, from: 'sai-gon', to: 'nha-trang' },
-  { id: 2, label: 'Sài Gòn ? Ðà L?t', price: 150000, from: 'sai-gon', to: 'da-lat' },
-  { id: 3, label: 'Sài Gòn ? Phan Thi?t', price: 90000, from: 'sai-gon', to: 'phan-thiet' },
-  { id: 4, label: 'Sài Gòn ? Phan Rang', price: 100000, from: 'sai-gon', to: 'phan-rang' },
-  { id: 5, label: 'Sài Gòn ? Vung Tàu', price: 75000, from: 'sai-gon', to: 'vung-tau' },
-  { id: 6, label: 'Hà N?i ? H?i Phòng', price: 80000, from: 'ha-noi', to: 'hai-phong' },
-  { id: 7, label: 'Hà N?i ? Ðà N?ng', price: 250000, from: 'ha-noi', to: 'da-nang' },
-  { id: 8, label: 'Hà N?i ? Ninh Bình', price: 60000, from: 'ha-noi', to: 'ninh-binh' },
-  { id: 9, label: 'Ðà N?ng ? H?i An', price: 40000, from: 'da-nang', to: 'hoi-an' },
-  { id: 10, label: 'Ðà N?ng ? Hu?', price: 70000, from: 'da-nang', to: 'hue' },
-  { id: 11, label: 'Sài Gòn ? C?n Tho', price: 110000, from: 'sai-gon', to: 'can-tho' },
-  { id: 12, label: 'Sài Gòn ? Quy Nhon', price: 200000, from: 'sai-gon', to: 'quy-nhon' },
+  { id: 1, label: 'SÃ i GÃ²n - Nha Trang', price: 120000, from: 'sai-gon', to: 'nha-trang' },
+  { id: 2, label: 'SÃ i GÃ²n - ÄÃ  Láº¡t', price: 150000, from: 'sai-gon', to: 'da-lat' },
+  { id: 3, label: 'SÃ i GÃ²n - Phan Thiáº¿t', price: 90000, from: 'sai-gon', to: 'phan-thiet' },
+  { id: 4, label: 'SÃ i GÃ²n - Phan Rang', price: 100000, from: 'sai-gon', to: 'phan-rang' },
+  { id: 5, label: 'SÃ i GÃ²n - VÅ©ng TÃ u', price: 75000, from: 'sai-gon', to: 'vung-tau' },
+  { id: 6, label: 'HÃ  Ná»™i - Háº£i PhÃ²ng', price: 80000, from: 'ha-noi', to: 'hai-phong' },
+  { id: 7, label: 'HÃ  Ná»™i - ÄÃ  Náºµng', price: 250000, from: 'ha-noi', to: 'da-nang' },
+  { id: 8, label: 'HÃ  Ná»™i - Ninh BÃ¬nh', price: 60000, from: 'ha-noi', to: 'ninh-binh' },
+  { id: 9, label: 'ÄÃ  Náºµng - Há»™i An', price: 40000, from: 'da-nang', to: 'hoi-an' },
+  { id: 10, label: 'ÄÃ  Náºµng - Huáº¿', price: 70000, from: 'da-nang', to: 'hue' },
+  { id: 11, label: 'SÃ i GÃ²n - Cáº§n ThÆ¡', price: 110000, from: 'sai-gon', to: 'can-tho' },
+  { id: 12, label: 'SÃ i GÃ²n - Quy NhÆ¡n', price: 200000, from: 'sai-gon', to: 'quy-nhon' },
 ]
 
 const DOUBLED = [...SAMPLE_ROUTES, ...SAMPLE_ROUTES]
@@ -23,7 +23,6 @@ const TickerRoutes = () => {
   const navigate = useNavigate()
   const trackRef = useRef(null)
   const [paused, setPaused] = useState(false)
-  const { locale, t } = useLanguage()
 
   const handleClick = (route) => {
     const today = new Date().toISOString().split('T')[0]
@@ -50,7 +49,7 @@ const TickerRoutes = () => {
             >
               <span className="ticker-routes__card-label">{route.label}</span>
               <span className="ticker-routes__card-price">
-                {t('ticker.fromPrice', { price: route.price.toLocaleString(locale) })}
+                {t('ticker.fromPrice', { price: route.price.toLocaleString(APP_LOCALE) })}
               </span>
             </button>
           ))}

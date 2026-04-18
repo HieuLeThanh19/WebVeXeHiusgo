@@ -1,8 +1,10 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { HiOutlineCreditCard, HiOutlineMap, HiOutlineShieldCheck, HiOutlineTicket } from 'react-icons/hi'
 import SearchBox from '../components/home/SearchBox'
 import PopularRoutes from '../components/home/PopularRoutes'
 import TickerRoutes from '../components/home/TickerRoutes'
-import { useLanguage } from '../i18n/LanguageContext'
+import { t } from '../content/siteText'
+
 const heroBanners = [
   '/picture/20260408_1518_image.png',
   '/picture/20260408_1518_image (1).png',
@@ -12,7 +14,32 @@ const heroBanners = [
 
 const Home = () => {
   const [activeBanner, setActiveBanner] = useState(0)
-  const { t } = useLanguage()
+  const homeFeatures = [
+    {
+      id: 'routes',
+      title: t('home.features.routesTitle'),
+      description: t('home.features.routesDescription'),
+      icon: HiOutlineMap,
+    },
+    {
+      id: 'payment',
+      title: t('home.features.paymentTitle'),
+      description: t('home.features.paymentDescription'),
+      icon: HiOutlineCreditCard,
+    },
+    {
+      id: 'booking',
+      title: t('home.features.bookingTitle'),
+      description: t('home.features.bookingDescription'),
+      icon: HiOutlineTicket,
+    },
+    {
+      id: 'security',
+      title: t('home.features.securityTitle'),
+      description: t('home.features.securityDescription'),
+      icon: HiOutlineShieldCheck,
+    },
+  ]
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -80,27 +107,24 @@ const Home = () => {
       </section>
 
       <PopularRoutes />
-      
+
       <section className="features-section">
         <div className="container">
           <h2>{t('home.whyChoose')}</h2>
           <div className="features-grid">
-            <div className="feature-card">
-              <h3>{t('home.features.routesTitle')}</h3>
-              <p>{t('home.features.routesDescription')}</p>
-            </div>
-            <div className="feature-card">
-              <h3>{t('home.features.paymentTitle')}</h3>
-              <p>{t('home.features.paymentDescription')}</p>
-            </div>
-            <div className="feature-card">
-              <h3>{t('home.features.bookingTitle')}</h3>
-              <p>{t('home.features.bookingDescription')}</p>
-            </div>
-            <div className="feature-card">
-              <h3>{t('home.features.securityTitle')}</h3>
-              <p>{t('home.features.securityDescription')}</p>
-            </div>
+            {homeFeatures.map((feature) => {
+              const Icon = feature.icon
+
+              return (
+                <div key={feature.id} className="feature-card">
+                  <div className="feature-card__icon">
+                    <Icon />
+                  </div>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.description}</p>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

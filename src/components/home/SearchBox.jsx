@@ -1,14 +1,12 @@
 ﻿import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getLocations } from '../../services/supabaseClient'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { t } from '../../content/siteText'
 
 const SearchBox = () => {
   const navigate = useNavigate()
   const [locations, setLocations] = useState([])
   const [searchData, setSearchData] = useState({ from: '', to: '', date: '' })
-  const { t } = useLanguage()
-
   useEffect(() => {
     getLocations().then(setLocations).catch(console.error)
   }, [])

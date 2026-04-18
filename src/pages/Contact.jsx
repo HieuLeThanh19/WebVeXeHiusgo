@@ -1,8 +1,6 @@
-import { useLanguage } from '../i18n/LanguageContext'
+import { t } from '../content/siteText'
 
 const Contact = () => {
-  const { t } = useLanguage()
-
   return (
     <div className="container static-page">
       <h1>{t('contactPage.title')}</h1>

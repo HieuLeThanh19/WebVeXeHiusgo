@@ -1,10 +1,8 @@
 import { FaFacebook, FaTiktok, FaYoutube } from 'react-icons/fa'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { t } from '../../content/siteText'
 import '../../styles/footer.scss'
 
 const SiteFooterFixed = () => {
-  const { t } = useLanguage()
-
   return (
     <footer className="footer">
       <div className="container">
