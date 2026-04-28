@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+﻿/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { FaBell, FaBus, FaPhoneAlt, FaUser } from 'react-icons/fa'
@@ -46,12 +46,13 @@ const Header = ({ theme, onToggleTheme }) => {
                 <NavLink to="/" end className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
                   {t('header.home')}
                 </NavLink>
+                <NavLink to="/my-orders" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
+                  Đơn hàng của tôi
+                </NavLink>
                 <NavLink to="/about" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
                   {t('header.about')}
                 </NavLink>
-                <NavLink to="/contact" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
-                  {t('header.contact')}
-                </NavLink>
+                
               </nav>
 
               <div className="header-actions">

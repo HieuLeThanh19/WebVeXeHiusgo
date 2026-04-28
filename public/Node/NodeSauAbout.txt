@@ -1,0 +1,76 @@
+Thiết Kế Hiện Tại
+Web đang đi theo hướng modern booking UI khá sáng, sạch và thân thiện, thiên về cảm giác “dịch vụ đáng tin cậy” hơn là quá quảng cáo.
+
+Typography:
+
+Font hiện dùng nhóm sans-serif hệ thống, cảm giác trung tính, dễ đọc, an toàn.
+Heading dùng cỡ lớn, đậm, màu xanh đậm để tạo sự tin cậy.
+Body text dùng cỡ vừa, line-height thoáng, dễ đọc trên nền sáng.
+Màu sắc:
+
+Màu chủ đạo là xanh navy và teal/mint.
+Navy dùng cho tiêu đề, logo, điểm nhấn mang tính thương hiệu và tin cậy.
+Teal/mint dùng cho CTA, hover, accent card, trạng thái tích cực và cảm giác công nghệ mềm.
+Nền chủ yếu là trắng, xám rất nhạt, xanh rất nhạt để giữ giao diện sáng và sạch.
+Bóng đổ mềm, không quá dày, thiên về cảm giác “glass nhẹ + card nổi”.
+Phong cách:
+
+Card-based layout.
+Góc bo tròn khá nhiều, từ 12px đến 30px+, tạo cảm giác mềm và hiện đại.
+Giao diện có nhiều lớp sáng nhẹ, gradient mịn, shadow dịu.
+Icon outline, ít chi tiết, hợp với hướng dịch vụ số.
+Bố cục ưu tiên rõ ràng, dễ quét mắt, phù hợp người dùng đặt vé nhanh.
+Các gam màu chính đang dùng:
+
+#1E3A8A hoặc gần đó: xanh thương hiệu, tiêu đề chính.
+#2563EB: xanh sáng hơn cho nhấn phụ.
+#1F9D8F: teal chủ đạo cho hành động và accent.
+#10B981: mint/green cho CTA tích cực.
+#F3F4F6, #FFFFFF: nền sáng và card.
+Text phụ thường là xám #6B7280, text chính là #1F2937.
+Ngôn ngữ hình ảnh:
+
+Banner và hero dùng ảnh lớn, bo tròn, overlay gradient.
+Các khối lợi ích dùng icon nhỏ, màu theo nhóm chức năng.
+Chuyển động đang ở mức vừa phải, chủ yếu ở slider, hover, transform nhẹ.
+Quy Tắc Tránh Xung Đột Khi Làm Tiếp
+Đây là phần quan trọng nhất để tránh lặp lại lỗi vừa rồi.
+
+Mỗi page phải có scope riêng trong CSS.
+Ví dụ:
+.home-page ...
+.about-page ...
+.contact-page ...
+Không viết selector trần kiểu .hero-section, .features-section, .search-box ở file global nữa.
+CSS chung và CSS trang phải tách vai trò rõ.
+main.scss: reset, layout base, component dùng lại nhiều nơi.
+theme.scss: màu, theme light/dark, token, override theo theme.
+about.scss: chỉ dành cho .about-page.
+Nếu sau này có trang mới, tạo services.scss, news.scss... riêng.
+Component nào có cấu trúc riêng thì nên có style riêng hoặc scope cực rõ.
+Ví dụ:
+PopularRoutes chỉ nên dùng class bắt đầu bằng .popular-routes.
+TickerRoutes chỉ nên dùng .ticker-routes__...
+SearchBox chỉ nên dùng .search-box__... nếu sau này tách riêng thêm.
+Không chuyển code giữa page bằng copy-paste rồi đổi nửa chừng.
+Nên theo quy trình:
+Copy component.
+Đổi toàn bộ class root trước.
+Kiểm tra selector phụ thuộc trong SCSS.
+Build/lint ngay sau khi chuyển.
+Trước khi sửa lớn, luôn grep selector gốc.
+Ví dụ nếu sửa .hero-section thì tìm:
+rg -n "\.hero-section|hero-section" src
+Cách này giúp thấy ngay selector nào đang dùng chung giữa nhiều page.
+
+Tránh để text hardcode rải rác nếu phần đó là UI chung.
+Text chung nên đi qua siteText.js.
+Text rất riêng của một page lớn có thể để ngay trong page, nhưng nên thống nhất một kiểu.
+Khi thêm page mới:
+Tạo file page.
+Tạo file style riêng.
+Import style ngay trong page đó nếu style chỉ phục vụ page.
+Root wrapper bắt buộc là class riêng của page.
+Trước khi kết thúc mỗi đợt sửa:
+chạy npm run lint
+chạy npm run build

@@ -6,7 +6,7 @@ import SiteFooter from './components/common/SiteFooterFixed'
 import Home from './pages/Home'
 import SearchResults from './pages/SearchResults'
 import AboutPage from './pages/AboutPage'
-import Contact from './pages/Contact'
+import MyOrders from './pages/MyOrders'
 import './styles/main.scss'
 import './styles/theme.scss'
 
@@ -38,7 +38,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/my-orders" element={<MyOrders />} />
           </Routes>
         </main>
         <FloatingContactButtons />
