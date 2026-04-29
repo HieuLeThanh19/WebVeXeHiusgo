@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/about.scss'
@@ -60,6 +59,8 @@ const FeatureBox = ({ icon, title, desc }) => (
     <p className="feature-desc">{desc}</p>
   </div>
 )
+
+const GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/MrRChr1YtJhgKJDT6'
 
 const MapFullModal = ({ onClose }) => {
   const mapRef = useRef(null)
@@ -150,7 +151,23 @@ const MapFullModal = ({ onClose }) => {
               <p className="modal-address">Trường ĐH Thủ Dầu Một – 6 Trần Văn Ơn, Phú Hòa, Thủ Dầu Một, Bình Dương</p>
             </div>
           </div>
-          <button className="modal-close" type="button" onClick={onClose}>✕</button>
+          <div className="modal-header-actions">
+            <a
+              href={GOOGLE_MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="modal-maps-btn"
+              title="Xem trên Google Maps"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Google Maps
+            </a>
+            <button className="modal-close" type="button" onClick={onClose}>×</button>
+          </div>
         </div>
         <div className="modal-map-body" ref={mapRef} />
       </div>
@@ -231,6 +248,9 @@ const OfficeMap = ({ onExpand }) => {
             <div>
               <div className="mac-name">Trường ĐH Thủ Dầu Một</div>
               <div className="mac-addr">6 Trần Văn Ơn, Phú Hòa, Thủ Dầu Một, Bình Dương</div>
+              <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" className="mac-maps-link">
+                Xem trên Google Maps
+              </a>
             </div>
           </div>
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
 import { FaGoogle, FaPhoneAlt, FaTimes } from 'react-icons/fa'
 import { t } from '../../content/siteText'

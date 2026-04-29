@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import {
   FaArrowUp,
   FaCommentDots,
+  FaExternalLinkAlt,
   FaFacebookMessenger,
   FaMapMarkerAlt,
   FaPhoneAlt,
@@ -10,9 +12,70 @@ import { SiZalo } from 'react-icons/si'
 import { t } from '../../content/siteText'
 import '../../styles/floating-contact.scss'
 
+const GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/MrRChr1YtJhgKJDT6'
+
+const LocationPanelContent = () => (
+  <div className="floating-contact__location-content">
+    <div className="floating-contact__location-preview" aria-hidden="true">
+      <span className="floating-contact__location-pin">
+        <FaMapMarkerAlt />
+      </span>
+      <span className="floating-contact__location-road floating-contact__location-road--one" />
+      <span className="floating-contact__location-road floating-contact__location-road--two" />
+    </div>
+
+    <div className="floating-contact__location-info">
+      <p className="floating-contact__location-name">ĐH Thủ Dầu Một - Văn phòng HiusGo</p>
+      <p className="floating-contact__location-addr">6 Trần Văn Ơn, Phú Hòa, Thủ Dầu Một, Bình Dương</p>
+      <p className="floating-contact__location-note">Bấm vào Google Maps để xem chi tiết vị trí và chỉ đường.</p>
+    </div>
+
+    <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" className="floating-contact__maps-link">
+      <FaExternalLinkAlt />
+      Xem trên Google Maps
+    </a>
+  </div>
+)
+
 function FloatingContactButtons() {
+  const location = useLocation()
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isCollapsing, setIsCollapsing] = useState(false)
   const [activePanel, setActivePanel] = useState(null)
+  const previousPathRef = useRef(`${location.pathname}${location.search}`)
+  const collapseTimerRef = useRef(null)
+
+  const collapseMenu = () => {
+    if (collapseTimerRef.current) {
+      window.clearTimeout(collapseTimerRef.current)
+    }
+
+    setIsCollapsing(true)
+    setIsExpanded(false)
+    setActivePanel(null)
+
+    collapseTimerRef.current = window.setTimeout(() => {
+      setIsCollapsing(false)
+      collapseTimerRef.current = null
+    }, 360)
+  }
+
+  useEffect(() => {
+    const currentPath = `${location.pathname}${location.search}`
+
+    if (previousPathRef.current !== currentPath) {
+      previousPathRef.current = currentPath
+      collapseMenu()
+    }
+  }, [location.pathname, location.search])
+
+  useEffect(() => {
+    return () => {
+      if (collapseTimerRef.current) {
+        window.clearTimeout(collapseTimerRef.current)
+      }
+    }
+  }, [])
 
   const contactActions = [
     {
@@ -50,7 +113,7 @@ function FloatingContactButtons() {
       const nextState = !currentState
 
       if (!nextState) {
-        setActivePanel(null)
+        collapseMenu()
       }
 
       return nextState
@@ -73,7 +136,7 @@ function FloatingContactButtons() {
   }
 
   return (
-    <div className={`floating-contact${isExpanded ? ' is-expanded' : ''}`}>
+    <div className={`floating-contact${isExpanded ? ' is-expanded' : ''}${isCollapsing ? ' is-collapsing' : ''}`}>
       <div className="floating-contact__stack" aria-label={t('floating.quickContact')}>
         {contactActions.map((action, index) => {
           const Icon = action.icon
@@ -83,7 +146,10 @@ function FloatingContactButtons() {
             <div
               key={action.id}
               className={`floating-contact__item${isActive ? ' is-active' : ''}`}
-              style={{ '--contact-index': contactActions.length - index }}
+              style={{
+                '--contact-index': contactActions.length - index,
+                '--contact-collapse-index': index + 1,
+              }}
             >
               <div
                 className={`floating-contact__panel${isActive ? ' is-visible' : ''}`}
@@ -92,7 +158,9 @@ function FloatingContactButtons() {
               >
                 <div className="floating-contact__panel-shell">
                   <span className="floating-contact__panel-kicker">{panelTitle || action.label}</span>
-                  <div className="floating-contact__panel-body" />
+                  <div className="floating-contact__panel-body">
+                    {action.id === 'location' && isActive && <LocationPanelContent />}
+                  </div>
                 </div>
               </div>
 

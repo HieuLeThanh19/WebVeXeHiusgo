@@ -1,4 +1,3 @@
-﻿/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { FaBell, FaBus, FaPhoneAlt, FaUser } from 'react-icons/fa'
@@ -52,7 +51,6 @@ const Header = ({ theme, onToggleTheme }) => {
                 <NavLink to="/about" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
                   {t('header.about')}
                 </NavLink>
-                
               </nav>
 
               <div className="header-actions">

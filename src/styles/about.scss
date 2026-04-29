@@ -506,6 +506,20 @@ body[data-theme='dark'] {
     .mac-icon { font-size: 20px; margin-top: 1px; flex-shrink: 0; }
     .mac-name { font-family: var(--about-font-heading); font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 3px; }
     .mac-addr { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+    .mac-maps-link {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 7px;
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+
+      &:hover {
+        color: var(--teal);
+        text-decoration: underline;
+      }
+    }
   }
 }
 
@@ -601,6 +615,41 @@ body[data-theme='dark'] {
     }
   }
 
+  .modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .modal-maps-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    color: #fff;
+    font-family: var(--about-font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .2s, transform .15s;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.28);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+  }
+
   .modal-close {
     background: rgba(255,255,255,.2);
     border: none; color: #fff;
@@ -608,7 +657,7 @@ body[data-theme='dark'] {
     border-radius: 50%; font-size: 15px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 2px;
+    flex-shrink: 0;
     transition: background .2s;
     &:hover { background: rgba(255,255,255,.35); }
   }
@@ -675,6 +724,10 @@ body[data-theme='dark'] {
 
     .map-address-card {
       background: #102731;
+    }
+
+    .mac-maps-link {
+      color: #7fe0c8;
     }
 
     .modal-close {
