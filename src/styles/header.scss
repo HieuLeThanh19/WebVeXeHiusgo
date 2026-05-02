@@ -209,3 +209,9 @@
     }
   }
 }
+
+body.hiusgo-modal-open .header {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

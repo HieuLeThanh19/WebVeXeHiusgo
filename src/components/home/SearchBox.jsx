@@ -1,19 +1,37 @@
-﻿import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { getLocations } from '../../services/supabaseClient'
 import { t } from '../../content/siteText'
+import { sampleLocations } from '../../data/sampleTrips'
 
-const SearchBox = () => {
-  const navigate = useNavigate()
-  const [locations, setLocations] = useState([])
-  const [searchData, setSearchData] = useState({ from: '', to: '', date: '' })
+const mergeLocations = (remoteLocations = []) => {
+  const bySlug = new Map(sampleLocations.map((location) => [location.slug, location]))
+
+  remoteLocations.forEach((location) => {
+    if (location?.slug) {
+      bySlug.set(location.slug, location)
+    }
+  })
+
+  return Array.from(bySlug.values()).sort((a, b) => a.name.localeCompare(b.name, 'vi'))
+}
+
+const SearchBox = ({ value, onChange, onSearch }) => {
+  const [locations, setLocations] = useState(sampleLocations)
+  const searchData = value || { from: '', to: '', date: '' }
+
   useEffect(() => {
-    getLocations().then(setLocations).catch(console.error)
+    getLocations()
+      .then((data) => setLocations(mergeLocations(data)))
+      .catch(() => setLocations(sampleLocations))
   }, [])
 
   const handleSearch = (e) => {
     e.preventDefault()
-    navigate(`/search?from=${searchData.from}&to=${searchData.to}&date=${searchData.date}`)
+    onSearch?.(searchData)
+  }
+
+  const updateSearchData = (field, nextValue) => {
+    onChange?.({ ...searchData, [field]: nextValue })
   }
 
   return (
@@ -24,7 +42,7 @@ const SearchBox = () => {
           <select
             id="from"
             value={searchData.from}
-            onChange={(e) => setSearchData({ ...searchData, from: e.target.value })}
+            onChange={(e) => updateSearchData('from', e.target.value)}
             required
           >
             <option value="">{t('searchBox.chooseFrom')}</option>
@@ -39,7 +57,7 @@ const SearchBox = () => {
           <select
             id="to"
             value={searchData.to}
-            onChange={(e) => setSearchData({ ...searchData, to: e.target.value })}
+            onChange={(e) => updateSearchData('to', e.target.value)}
             required
           >
             <option value="">{t('searchBox.chooseTo')}</option>
@@ -55,7 +73,7 @@ const SearchBox = () => {
             id="date"
             type="date"
             value={searchData.date}
-            onChange={(e) => setSearchData({ ...searchData, date: e.target.value })}
+            onChange={(e) => updateSearchData('date', e.target.value)}
             required
           />
         </div>

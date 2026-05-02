@@ -23,9 +23,6 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
 
     setMode(defaultMode)
 
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         onClose()
@@ -35,7 +32,6 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [defaultMode, isOpen, onClose])

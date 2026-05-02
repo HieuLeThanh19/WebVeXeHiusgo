@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { HiOutlineCreditCard, HiOutlineMap, HiOutlineShieldCheck, HiOutlineTicket } from 'react-icons/hi'
 import SearchBox from '../components/home/SearchBox'
 import PopularRoutes from '../components/home/PopularRoutes'
 import TickerRoutes from '../components/home/TickerRoutes'
+import SearchResults from './SearchResults'
 import { t } from '../content/siteText'
 
 const heroBanners = [
@@ -14,6 +15,10 @@ const heroBanners = [
 
 const Home = () => {
   const [activeBanner, setActiveBanner] = useState(0)
+  const resultsRef = useRef(null)
+  const today = new Date().toISOString().split('T')[0]
+  const [searchData, setSearchData] = useState({ from: '', to: '', date: today })
+  const [submittedSearch, setSubmittedSearch] = useState(null)
   const homeFeatures = [
     {
       id: 'routes',
@@ -49,9 +54,32 @@ const Home = () => {
     return () => window.clearInterval(intervalId)
   }, [])
 
+  const scrollToResults = () => {
+    window.setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 80)
+  }
+
+  const handleSearch = (nextSearchData = searchData) => {
+    setSubmittedSearch(nextSearchData)
+    scrollToResults()
+  }
+
+  const handleRouteSelect = (route) => {
+    const nextSearchData = {
+      from: route.from,
+      to: route.to,
+      date: route.date || searchData.date || today,
+    }
+
+    setSearchData(nextSearchData)
+    setSubmittedSearch(nextSearchData)
+    scrollToResults()
+  }
+
   return (
     <div className="home-page">
-      <TickerRoutes />
+      <TickerRoutes onRouteSelect={handleRouteSelect} />
       <section className="hero-section">
         <div className="container">
           <div className="hero-content">
@@ -71,7 +99,11 @@ const Home = () => {
                 </div>
               </div>
 
-              <SearchBox />
+              <SearchBox
+                value={searchData}
+                onChange={setSearchData}
+                onSearch={handleSearch}
+              />
             </div>
 
             <div className="hero-banner-panel">
@@ -103,6 +135,21 @@ const Home = () => {
               </div>
             </div>
           </div>
+
+          {submittedSearch && (
+            <div ref={resultsRef} className="home-search-results">
+              <SearchResults
+                embedded
+                searchCriteria={submittedSearch}
+                onChangeSearch={() => {
+                  setSubmittedSearch(null)
+                  window.setTimeout(() => {
+                    document.getElementById('from')?.focus()
+                  }, 80)
+                }}
+              />
+            </div>
+          )}
         </div>
       </section>
 

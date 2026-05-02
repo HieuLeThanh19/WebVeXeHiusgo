@@ -334,6 +334,14 @@ main {
   }
 }
 
+.home-page .home-search-results {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  margin-top: 24px;
+  scroll-margin-top: 96px;
+}
+
 // Popular Routes
 .home-page .popular-routes {
   padding: 80px 0;
@@ -542,23 +550,6 @@ main {
       line-height: 1.7;
       font-size: 0.95rem;
     }
-  }
-}
-
-// Search Results
-.search-results-page {
-  padding: 60px 0;
-  min-height: 500px;
-  width: 100%;
-
-  h2 {
-    margin-bottom: 20px;
-    font-size: 2rem;
-  }
-
-  p {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
   }
 }
 

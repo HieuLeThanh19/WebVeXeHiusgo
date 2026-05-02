@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { FaBus } from 'react-icons/fa'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { HiOutlineShieldCheck, HiOutlineTag, HiOutlineTicket } from 'react-icons/hi'
-import { getPopularRoutes } from '../../services/supabaseClient'
 
 const promoBanners = [
   '/picture/20260409_0015_image.png',
@@ -35,11 +33,9 @@ const copy = {
 }
 
 const PopularRoutes = () => {
-  const [routes, setRoutes] = useState([])
   const [activeBanner, setActiveBanner] = useState(0)
   const [isCarouselPaused, setIsCarouselPaused] = useState(false)
   const [slidesPerView, setSlidesPerView] = useState(3)
-  const navigate = useNavigate()
   const resumeTimeoutRef = useRef(null)
   const maxBannerIndex = Math.max(promoBanners.length - slidesPerView, 0)
   const platformHighlights = [
@@ -72,10 +68,6 @@ const PopularRoutes = () => {
       accentClass: 'is-rose',
     },
   ]
-
-  useEffect(() => {
-    getPopularRoutes().then(setRoutes).catch(console.error)
-  }, [])
 
   useEffect(() => {
     const syncSlidesPerView = () => {
@@ -135,11 +127,6 @@ const PopularRoutes = () => {
 
     return () => window.clearInterval(intervalId)
   }, [isCarouselPaused, maxBannerIndex])
-
-  const handleClick = (route) => {
-    const today = new Date().toISOString().split('T')[0]
-    navigate(`/search?from=${route.origin.slug}&to=${route.destination.slug}&date=${today}`)
-  }
 
   const showPreviousBanner = () => {
     pauseCarouselAfterInteraction()
@@ -240,13 +227,6 @@ const PopularRoutes = () => {
           </div>
         </div>
 
-        <div className="routes-grid">
-          {routes.map((route) => (
-            <button key={route.id} onClick={() => handleClick(route)} className="route-link">
-              {route.label}
-            </button>
-          ))}
-        </div>
       </div>
     </section>
   )

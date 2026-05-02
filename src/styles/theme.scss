@@ -578,36 +578,6 @@ body {
   }
 }
 
-.search-results-page {
-  background: linear-gradient(180deg, rgba(127, 224, 200, 0.12), rgba(255, 255, 255, 0));
-
-  h2 {
-    color: $blue-900;
-  }
-
-  .trip-card {
-    padding: 22px 24px;
-    margin-top: 16px;
-    border-radius: 20px;
-    background: $white;
-    border: 1px solid rgba(31, 157, 143, 0.12);
-    box-shadow: 0 12px 24px rgba(31, 41, 55, 0.06);
-
-    h4 {
-      margin-bottom: 10px;
-      color: $blue-900;
-    }
-
-    button {
-      margin-top: 8px;
-      background: linear-gradient(135deg, $blue-600 0%, $teal-700 100%);
-      color: $white;
-      border: none;
-      box-shadow: 0 12px 20px rgba(37, 99, 235, 0.16);
-    }
-  }
-}
-
 .static-page {
   color: $gray-800;
 
@@ -907,22 +877,6 @@ main {
   }
 }
 
-.search-results-page {
-  background: linear-gradient(180deg, rgba(127, 224, 200, 0.12), transparent);
-
-  h2,
-  .trip-card h4 {
-    color: var(--text-title, #1e3a8a);
-  }
-
-  .trip-card {
-    background: var(--surface-card, #ffffff);
-    color: var(--text-primary, #1f2937);
-    border-color: var(--border-soft, rgba(31, 157, 143, 0.12));
-    box-shadow: var(--shadow-soft, 0 12px 24px rgba(31, 41, 55, 0.06));
-  }
-}
-
 .static-page {
   color: var(--text-primary, #1f2937);
 
@@ -965,8 +919,7 @@ body[data-theme='dark'] {
   .popular-routes .promo-carousel__image,
   .home-page .hero-section .hero-banner-panel,
   .home-page .search-box,
-  .home-page .features-section .feature-card,
-  .search-results-page .trip-card {
+  .home-page .features-section .feature-card {
     box-shadow: var(--shadow-card, 0 26px 52px rgba(2, 12, 18, 0.42));
   }
 }
