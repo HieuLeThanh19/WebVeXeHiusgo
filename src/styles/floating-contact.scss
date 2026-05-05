@@ -162,7 +162,7 @@
   position: absolute;
   right: calc(100% + 18px);
   top: 50%;
-  width: min(280px, calc(100vw - 120px));
+  width: min(320px, calc(100vw - 120px));
   opacity: 0;
   visibility: hidden;
   transform: translateY(-50%) translateX(14px) scale(0.92);
@@ -346,6 +346,192 @@
   }
 }
 
+.floating-contact__contact-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &--zalo {
+    align-items: center;
+  }
+}
+
+.floating-contact__brand-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(37, 99, 235, 0.12);
+
+  &.is-messenger {
+    background:
+      linear-gradient(135deg, rgba(10, 124, 255, 0.12), rgba(123, 44, 255, 0.08)),
+      rgba(255, 255, 255, 0.84);
+  }
+
+  &.is-zalo {
+    background:
+      linear-gradient(135deg, rgba(0, 104, 255, 0.12), rgba(0, 168, 255, 0.08)),
+      rgba(255, 255, 255, 0.84);
+  }
+}
+
+.floating-contact__brand-logo {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0a7cff 0%, #006aff 52%, #7b2cff 100%);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+
+  svg {
+    font-size: 1.35rem;
+  }
+
+  &--text {
+    background: linear-gradient(135deg, #0068ff 0%, #00a8ff 100%);
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0;
+  }
+
+  &--image {
+    overflow: hidden;
+    background: #e6f3ff;
+    padding: 0;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.floating-contact__brand-name {
+  margin: 2px 0 0;
+  color: var(--floating-text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.floating-contact__contact-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.floating-contact__contact-title,
+.floating-contact__contact-text,
+.floating-contact__phone-number {
+  margin: 0;
+}
+
+.floating-contact__contact-title {
+  color: var(--floating-text);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.floating-contact__contact-text {
+  color: var(--floating-text-soft);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.floating-contact__phone-number {
+  color: var(--floating-blue-deep);
+  font-size: 1.18rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.floating-contact__contact-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: fit-content;
+  min-height: 36px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(31, 157, 143, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  svg {
+    font-size: 0.9rem;
+  }
+
+  &:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px rgba(31, 157, 143, 0.3);
+  }
+
+  &.is-messenger {
+    background: linear-gradient(135deg, #0a7cff 0%, #006aff 52%, #7b2cff 100%);
+  }
+
+  &.is-zalo {
+    background: linear-gradient(135deg, #0068ff 0%, #00a8ff 100%);
+  }
+
+  &.is-phone {
+    background: linear-gradient(135deg, #10b981 0%, #1f9d8f 100%);
+  }
+}
+
+.floating-contact__zalo-qr-wrap {
+  position: relative;
+  width: min(180px, 100%);
+  aspect-ratio: 1;
+  padding: 10px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  box-shadow: 0 14px 28px rgba(30, 58, 138, 0.12);
+}
+
+.floating-contact__zalo-qr {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.floating-contact__zalo-badge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #0a66ff;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 5px #fff;
+}
+
 body[data-theme='dark'] {
   .floating-contact {
     --floating-surface: #0d2530;
@@ -381,6 +567,11 @@ body[data-theme='dark'] {
       linear-gradient(135deg, rgba(127, 224, 200, 0.12) 0%, rgba(13, 37, 48, 0.78) 100%);
   }
 
+  .floating-contact__brand-heading {
+    background: rgba(13, 37, 48, 0.58);
+    border-color: rgba(127, 224, 200, 0.14);
+  }
+
   .floating-contact__location-preview {
     background:
       linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(16, 185, 129, 0.2)),
@@ -390,5 +581,9 @@ body[data-theme='dark'] {
 
   .floating-contact__location-note {
     color: #7fe0c8;
+  }
+
+  .floating-contact__phone-number {
+    color: #e5f7f3;
   }
 }

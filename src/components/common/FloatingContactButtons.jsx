@@ -13,6 +13,11 @@ import { t } from '../../content/siteText'
 import '../../styles/floating-contact.scss'
 
 const GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/MrRChr1YtJhgKJDT6'
+const MESSENGER_URL = 'https://m.me/lethanhhieu192'
+const SUPPORT_PHONE = '0344849577'
+const ZALO_URL = `https://zalo.me/${SUPPORT_PHONE}`
+const ZALO_QR_URL = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(ZALO_URL)}`
+const CONTACT_AVATAR_URL = '/picture/Anh_Nen_Zalo.png'
 
 const LocationPanelContent = () => (
   <div className="floating-contact__location-content">
@@ -33,6 +38,61 @@ const LocationPanelContent = () => (
     <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" className="floating-contact__maps-link">
       <FaExternalLinkAlt />
       Xem trên Google Maps
+    </a>
+  </div>
+)
+
+const MessengerPanelContent = () => (
+  <div className="floating-contact__contact-content">
+    <div className="floating-contact__brand-heading is-messenger">
+      <span className="floating-contact__brand-logo floating-contact__brand-logo--image">
+        <img src={CONTACT_AVATAR_URL} alt="Avatar Messenger Hieu" loading="lazy" />
+      </span>
+      <div>
+        <p className="floating-contact__contact-title">Messenger</p>
+        <p className="floating-contact__brand-name">Hieu</p>
+      </div>
+    </div>
+    <p className="floating-contact__contact-text">Kết nối nhanh với Hieu qua Messenger để được hỗ trợ đặt vé.</p>
+    <a href={MESSENGER_URL} target="_blank" rel="noopener noreferrer" className="floating-contact__contact-link is-messenger">
+      <FaFacebookMessenger />
+      Mở Messenger
+    </a>
+  </div>
+)
+
+const ZaloPanelContent = () => (
+  <div className="floating-contact__contact-content floating-contact__contact-content--zalo">
+    <div className="floating-contact__brand-heading is-zalo">
+      <span className="floating-contact__brand-logo floating-contact__brand-logo--image">
+        <img src={CONTACT_AVATAR_URL} alt="Avatar Zalo Hieu" loading="lazy" />
+      </span>
+      <div>
+        <p className="floating-contact__contact-title">Zalo Hieu</p>
+        <p className="floating-contact__brand-name">{SUPPORT_PHONE}</p>
+      </div>
+    </div>
+    <div className="floating-contact__zalo-qr-wrap">
+      <img className="floating-contact__zalo-qr" src={ZALO_QR_URL} alt="Mã QR Zalo Hieu" loading="lazy" />
+      <span className="floating-contact__zalo-badge">Zalo</span>
+    </div>
+    <div className="floating-contact__contact-copy">
+      <p className="floating-contact__contact-text">Quét mã hoặc bấm nút bên dưới để mở Zalo trong tab mới.</p>
+      <a href={ZALO_URL} target="_blank" rel="noopener noreferrer" className="floating-contact__contact-link is-zalo">
+        <SiZalo />
+        Mở Zalo
+      </a>
+    </div>
+  </div>
+)
+
+const PhonePanelContent = () => (
+  <div className="floating-contact__contact-content">
+    <p className="floating-contact__contact-title">Gọi hỗ trợ</p>
+    <p className="floating-contact__phone-number">{SUPPORT_PHONE}</p>
+    <a href={`tel:${SUPPORT_PHONE}`} className="floating-contact__contact-link is-phone">
+      <FaPhoneAlt />
+      Gọi ngay
     </a>
   </div>
 )
@@ -160,6 +220,9 @@ function FloatingContactButtons() {
                   <span className="floating-contact__panel-kicker">{panelTitle || action.label}</span>
                   <div className="floating-contact__panel-body">
                     {action.id === 'location' && isActive && <LocationPanelContent />}
+                    {action.id === 'messenger' && isActive && <MessengerPanelContent />}
+                    {action.id === 'zalo' && isActive && <ZaloPanelContent />}
+                    {action.id === 'phone' && isActive && <PhonePanelContent />}
                   </div>
                 </div>
               </div>

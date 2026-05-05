@@ -646,6 +646,15 @@
   }
 }
 
+.sr-trip-card.is-booking-active {
+  border-color: rgba(31,157,143,0.38);
+  box-shadow: 0 18px 38px rgba(31,157,143,0.14);
+}
+
+.sr-inline-booking-panel {
+  margin: -2px 0 20px;
+}
+
 // ── SKELETON LOADING ──────────────────────────────────────────
 @keyframes shimmer {
   0%   { background-position: -600px 0; }
@@ -684,6 +693,17 @@
   @media (min-width: 768px) {
     align-items: center;
   }
+}
+
+.seat-modal-overlay.seat-modal-overlay--inline,
+.pickup-modal-overlay.pickup-modal-overlay--inline {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  display: block;
+  background: transparent;
+  backdrop-filter: none;
+  animation: none;
 }
 
 @keyframes fadeInOverlay {
@@ -755,16 +775,18 @@
   }
 
   &__body {
-    padding: 20px 24px;
+    padding: 18px 20px;
   }
 
   &__floors {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: center;
+    gap: 18px;
 
     @media (max-width: 540px) {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, max-content));
+      gap: 12px;
     }
   }
 
@@ -779,15 +801,71 @@
   }
 
   &__floor-card {
+    position: relative;
+    width: 182px;
+    min-height: 398px;
     background: var(--surface-soft, #f3f4f6);
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 22px 22px 6px 6px;
+    padding: 58px 18px 22px;
+
+    &--two {
+      width: 154px;
+      min-height: 394px;
+      padding-inline: 18px;
+    }
+
+    @media (max-width: 540px) {
+      width: 146px;
+      min-height: 374px;
+      padding: 54px 14px 18px;
+
+      &--two {
+        width: 128px;
+      }
+    }
   }
 
   &__seat-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(5, 26px);
+    grid-auto-rows: 40px;
+    align-items: center;
+    justify-items: center;
+    justify-content: space-between;
+    row-gap: 9px;
+  }
+
+  &__steering-wheel {
+    position: absolute;
+    top: 30px;
+    left: 18px;
+    width: 27px;
+    height: 27px;
+    border: 3px solid #7c7c7c;
+    border-radius: 50%;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      background: #7c7c7c;
+      border-radius: 999px;
+    }
+
+    &::before {
+      left: 50%;
+      bottom: 2px;
+      width: 3px;
+      height: 11px;
+      transform: translateX(-50%);
+    }
+
+    &::after {
+      left: 4px;
+      right: 4px;
+      top: 12px;
+      height: 3px;
+    }
   }
 
   &__legend {
@@ -877,30 +955,47 @@
 
 // ── Ghế đơn lẻ ───────────────────────────────────────────────
 .seat-btn {
-  aspect-ratio: 1;
-  border-radius: 8px;
+  position: relative;
+  grid-column: var(--seat-column);
+  grid-row: var(--seat-row);
+  width: 26px;
+  height: 38px;
+  border-radius: 6px;
   border: 2px solid var(--border-strong, rgba(31,157,143,0.24));
   background: var(--surface-card, #fff);
-  font-size: 0.72rem;
+  font-size: 0.56rem;
   font-weight: 700;
   color: var(--text-primary, #1f2937);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 1px 9px;
   transition: border-color 0.18s, background 0.18s, transform 0.14s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    height: 6px;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    opacity: 0.65;
+  }
 
   &:hover:not(.is-sold) {
     border-color: #1f9d8f;
     background: rgba(31,157,143,0.08);
-    transform: scale(1.08);
+    transform: translateY(-1px);
   }
 
   &.is-chosen {
     background: linear-gradient(135deg, #2563eb, #1f9d8f);
     border-color: transparent;
     color: #fff;
-    transform: scale(1.06);
+    transform: translateY(-1px);
   }
 
   &.is-sold {
@@ -1241,6 +1336,30 @@
 
   &.is-selected .pickup-option__check {
     opacity: 1;
+  }
+}
+
+.seat-modal-overlay--inline .seat-modal,
+.pickup-modal-overlay--inline .pickup-modal {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+  border-radius: 16px;
+  border: 1px solid rgba(31,157,143,0.18);
+  box-shadow: var(--shadow-soft, 0 12px 24px rgba(31,41,55,0.06));
+  animation: slideUp 0.24s cubic-bezier(0.32,0.72,0,1);
+
+  .seat-modal__header,
+  .pickup-modal__header {
+    border-radius: 16px 16px 0 0;
+  }
+
+  .seat-modal__footer,
+  .pickup-modal__footer,
+  .seat-modal__header,
+  .pickup-modal__header {
+    position: static;
   }
 }
 

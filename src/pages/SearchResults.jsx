@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   FiAlertCircle, FiArrowRight, FiCalendar, FiCheck, FiClock, FiFilter,
@@ -10,7 +10,6 @@ import {
   getLocationName,
   sampleDropoffPoints,
   samplePickupPoints,
-  sampleSeatFloors,
   sampleTrips,
 } from '../data/sampleTrips'
 import '../styles/search-results.scss'
@@ -102,8 +101,38 @@ const filterPoints = (points, query) => {
   )
 }
 
-const useBodyScrollLock = () => {
+const createSeatFloor = (prefix, sold, columns, rows = 6) =>
+  Array.from({ length: rows * columns.length }, (_, index) => {
+    const id = `${prefix}${index + 1}`
+    const row = Math.floor(index / columns.length) + 2
+
+    return {
+      id,
+      label: id,
+      row,
+      column: columns[index % columns.length],
+      status: sold.includes(index) ? 'sold' : 'empty',
+    }
+  })
+
+const getSeatLayout = (trip) => {
+  const isTwoColumnLayout = /limousine/i.test(trip.busType) || trip.availableSeats <= 6
+  const columns = isTwoColumnLayout ? [1, 5] : [1, 3, 5]
+  const rows = isTwoColumnLayout ? 6 : 7
+
+  return {
+    type: isTwoColumnLayout ? 'two' : 'three',
+    floors: {
+      lower: createSeatFloor('D', isTwoColumnLayout ? [1, 4, 8] : [1, 5, 9, 12, 16], columns, rows),
+      upper: createSeatFloor('T', isTwoColumnLayout ? [0, 3, 7] : [0, 3, 7, 11, 14, 18], columns, rows),
+    },
+  }
+}
+
+const useBodyScrollLock = (enabled = true) => {
   useEffect(() => {
+    if (!enabled) return undefined
+
     const scrollY = window.scrollY
     const previousBodyStyle = {
       overflow: document.body.style.overflow,
@@ -126,11 +155,11 @@ const useBodyScrollLock = () => {
       document.body.style.width = previousBodyStyle.width
       window.scrollTo(0, scrollY)
     }
-  }, [])
+  }, [enabled])
 }
 
-const SeatModal = ({ trip, onClose, onConfirm }) => {
-  useBodyScrollLock()
+const SeatModal = ({ trip, inline = false, onClose, onConfirm }) => {
+  useBodyScrollLock(!inline)
   const [chosen, setChosen] = useState([])
 
   const toggleSeat = (seat) => {
@@ -145,9 +174,13 @@ const SeatModal = ({ trip, onClose, onConfirm }) => {
   }
 
   const totalPrice = chosen.length * trip.basePrice
+  const seatLayout = getSeatLayout(trip)
 
   return (
-    <div className="seat-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className={`seat-modal-overlay${inline ? ' seat-modal-overlay--inline' : ''}`}
+      onClick={(e) => !inline && e.target === e.currentTarget && onClose()}
+    >
       <div className="seat-modal">
         <div className="seat-modal__header">
           <div>
@@ -163,12 +196,15 @@ const SeatModal = ({ trip, onClose, onConfirm }) => {
 
         <div className="seat-modal__body">
           <div className="seat-modal__floors">
-            {Object.entries(sampleSeatFloors).map(([floorKey, floorSeats]) => (
+            {Object.entries(seatLayout.floors).map(([floorKey, floorSeats]) => (
               <div key={floorKey}>
                 <p className="seat-modal__floor-title">
                   {floorKey === 'lower' ? 'Tầng dưới' : 'Tầng trên'}
                 </p>
-                <div className="seat-modal__floor-card">
+                <div className={`seat-modal__floor-card seat-modal__floor-card--${seatLayout.type}`}>
+                  {floorKey === 'lower' && (
+                    <span className="seat-modal__steering-wheel" aria-hidden="true" />
+                  )}
                   <div className="seat-modal__seat-grid">
                     {floorSeats.map((seat) => (
                       <button
@@ -180,6 +216,10 @@ const SeatModal = ({ trip, onClose, onConfirm }) => {
                         ].join(' ')}
                         onClick={() => toggleSeat(seat)}
                         disabled={seat.status === 'sold'}
+                        style={{
+                          '--seat-column': seat.column,
+                          '--seat-row': seat.row,
+                        }}
                         title={seat.label}
                         type="button"
                       >
@@ -233,8 +273,8 @@ const SeatModal = ({ trip, onClose, onConfirm }) => {
   )
 }
 
-const PickupModal = ({ trip, chosenSeats, totalPrice, onClose, onConfirm }) => {
-  useBodyScrollLock()
+const PickupModal = ({ trip, chosenSeats, totalPrice, inline = false, onClose, onConfirm }) => {
+  useBodyScrollLock(!inline)
   const [pickup, setPickup] = useState(null)
   const [dropoff, setDropoff] = useState(null)
   const [pickupQuery, setPickupQuery] = useState('')
@@ -249,7 +289,10 @@ const PickupModal = ({ trip, chosenSeats, totalPrice, onClose, onConfirm }) => {
   )
 
   return (
-    <div className="pickup-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className={`pickup-modal-overlay${inline ? ' pickup-modal-overlay--inline' : ''}`}
+      onClick={(e) => !inline && e.target === e.currentTarget && onClose()}
+    >
       <div className="pickup-modal">
         <div className="pickup-modal__header">
           <div>
@@ -376,6 +419,7 @@ const PickupModal = ({ trip, chosenSeats, totalPrice, onClose, onConfirm }) => {
 const SearchResults = ({ searchCriteria, embedded = false, onChangeSearch }) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const bookingPanelRef = useRef(null)
   const [sortBy, setSortBy] = useState('time-asc')
   const [filterType, setFilterType] = useState('all')
   const [filterTime, setFilterTime] = useState('all')
@@ -415,9 +459,22 @@ const SearchResults = ({ searchCriteria, embedded = false, onChangeSearch }) => 
     return a.depTime.localeCompare(b.depTime)
   })
 
+  useEffect(() => {
+    if (!embedded || (!seatModalTrip && !pickupModal)) return
+
+    window.setTimeout(() => {
+      bookingPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }, 80)
+  }, [embedded, pickupModal, seatModalTrip])
+
   const handleSeatConfirm = (seats, price) => {
     setPickupModal({ trip: seatModalTrip, seats, price })
     setSeatModalTrip(null)
+  }
+
+  const handleTripSelect = (trip) => {
+    setPickupModal(null)
+    setSeatModalTrip(trip)
   }
 
   const handlePickupConfirm = () => {
@@ -543,9 +600,12 @@ const SearchResults = ({ searchCriteria, embedded = false, onChangeSearch }) => 
           ) : (
             sortedTrips.map((trip) => {
               const arrivalInfo = getArrivalInfo(criteria.date, trip)
+              const isChoosingSeat = embedded && seatModalTrip?.id === trip.id
+              const isChoosingPickup = embedded && pickupModal?.trip.id === trip.id
 
               return (
-              <article key={trip.id} className="sr-trip-card">
+              <Fragment key={trip.id}>
+              <article className={`sr-trip-card${isChoosingSeat || isChoosingPickup ? ' is-booking-active' : ''}`}>
                 <div className="sr-trip-card__body">
                   <div className="sr-trip-card__thumb">
                     <img src={getTripImage(trip)} alt={`Xe ${trip.operator}`} loading="lazy" />
@@ -620,19 +680,44 @@ const SearchResults = ({ searchCriteria, embedded = false, onChangeSearch }) => 
                         Còn {trip.availableSeats} ghế{trip.availableSeats <= 5 ? '!' : ''}
                       </p>
                     </div>
-                    <button className="sr-trip-card__btn" onClick={() => setSeatModalTrip(trip)} type="button">
+                    <button className="sr-trip-card__btn" onClick={() => handleTripSelect(trip)} type="button">
                       Chọn chuyến
                     </button>
                   </div>
                 </div>
               </article>
+
+              {isChoosingSeat && (
+                <div ref={bookingPanelRef} className="sr-inline-booking-panel">
+                  <SeatModal
+                    trip={trip}
+                    inline
+                    onClose={() => setSeatModalTrip(null)}
+                    onConfirm={handleSeatConfirm}
+                  />
+                </div>
+              )}
+
+              {isChoosingPickup && (
+                <div ref={bookingPanelRef} className="sr-inline-booking-panel">
+                  <PickupModal
+                    trip={pickupModal.trip}
+                    chosenSeats={pickupModal.seats}
+                    totalPrice={pickupModal.price}
+                    inline
+                    onClose={() => setPickupModal(null)}
+                    onConfirm={handlePickupConfirm}
+                  />
+                </div>
+              )}
+              </Fragment>
               )
             })
           )}
         </section>
       </div>
 
-      {seatModalTrip && (
+      {!embedded && seatModalTrip && (
         <SeatModal
           trip={seatModalTrip}
           onClose={() => setSeatModalTrip(null)}
@@ -640,7 +725,7 @@ const SearchResults = ({ searchCriteria, embedded = false, onChangeSearch }) => 
         />
       )}
 
-      {pickupModal && (
+      {!embedded && pickupModal && (
         <PickupModal
           trip={pickupModal.trip}
           chosenSeats={pickupModal.seats}
