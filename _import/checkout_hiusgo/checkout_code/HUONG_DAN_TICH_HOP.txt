@@ -1,0 +1,164 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║          HƯỚNG DẪN TÍCH HỢP TRANG CHECKOUT – HIUSGO PROJECT                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Tổng cộng cần tạo/sửa các file sau:
+
+  TẠO MỚI (7 file):
+  ├─ src/pages/CheckoutPage.jsx
+  ├─ src/components/checkout/CheckoutHeader.jsx
+  ├─ src/components/checkout/ContactForm.jsx
+  ├─ src/components/checkout/ExtrasPanel.jsx
+  ├─ src/components/checkout/TripSummary.jsx
+  ├─ src/components/checkout/PaymentMethods.jsx
+  ├─ src/components/checkout/PaymentSummary.jsx
+  ├─ src/components/checkout/BookingSuccess.jsx
+  └─ src/styles/checkout.scss
+
+  SỬA (2 file):
+  ├─ src/App.jsx          → thêm route /checkout
+  └─ src/pages/SearchResults.jsx  → thêm navigate sang /checkout
+
+────────────────────────────────────────────────────────────────────────────────
+1. SỬA  src/App.jsx
+────────────────────────────────────────────────────────────────────────────────
+
+Thêm import ở đầu file (sau dòng import MyOrders):
+
+    import CheckoutPage from './pages/CheckoutPage'
+
+Thêm route trong <Routes> (sau route /my-orders):
+
+    <Route path="/checkout" element={<CheckoutPage />} />
+
+Lưu ý: Trang checkout có header riêng (CheckoutHeader.jsx) không dùng Header
+chung, nhưng vẫn để Header chung ở App vì layout trang thành công cần nó.
+Nếu muốn ẩn header chung khi ở /checkout, thêm đoạn sau vào App.jsx:
+
+    import { useLocation } from 'react-router-dom'
+    ...
+    const location = useLocation()
+    const isCheckout = location.pathname === '/checkout'
+    ...
+    {!isCheckout && <Header theme={theme} onToggleTheme={handleToggleTheme} />}
+
+
+────────────────────────────────────────────────────────────────────────────────
+2. SỬA  src/pages/SearchResults.jsx
+────────────────────────────────────────────────────────────────────────────────
+
+Tìm hàm handlePickupConfirm (khoảng dòng 480):
+
+  // TRƯỚC (code cũ):
+  const handlePickupConfirm = () => {
+    setPickupModal(null)
+    setToast(true)
+    window.setTimeout(() => setToast(false), 3500)
+  }
+
+  // SAU (thay bằng):
+  const handlePickupConfirm = () => {
+    if (!pickupModal) return
+    const { trip, seats, price } = pickupModal
+    const pickupPoint = samplePickupPoints.find((p) => p.id === pickupModal.pickup) || null
+    const dropoffPoint = sampleDropoffPoints.find((p) => p.id === pickupModal.dropoff) || null
+
+    navigate('/checkout', {
+      state: {
+        trip,
+        seats,
+        totalPrice: price,
+        pickup: pickupPoint,
+        dropoff: dropoffPoint,
+        date: criteria.date,
+      },
+    })
+    setPickupModal(null)
+  }
+
+QUAN TRỌNG: Trong PickupModal component (dòng ~240), hàm onConfirm cần truyền
+thêm pickup và dropoff đã chọn. Tìm đoạn:
+
+  const handlePickupConfirm = () => {
+    setPickupModal(null)
+    ...
+  }
+
+và đảm bảo pickupModal lưu cả pickup/dropoff. Sửa handleTripSelect... thực ra
+cách đơn giản nhất là sửa PickupModal để onConfirm nhận (pickupId, dropoffId):
+
+  // Trong component PickupModal, sửa nút "Xác nhận đặt vé":
+  <button
+    className="pickup-modal__footer-btn"
+    disabled={!pickup || !dropoff}
+    onClick={() => onConfirm(pickup, dropoff)}   // ← truyền pickup, dropoff
+    type="button"
+  >
+    Xác nhận đặt vé
+  </button>
+
+  // Sửa handleSeatConfirm để lưu đủ dữ liệu:
+  const handleSeatConfirm = (seats, price) => {
+    setPickupModal({ trip: seatModalTrip, seats, price, pickup: null, dropoff: null })
+    setSeatModalTrip(null)
+  }
+
+  // Và handlePickupConfirm nhận pickupId, dropoffId:
+  const handlePickupConfirm = (pickupId, dropoffId) => {
+    if (!pickupModal) return
+    const { trip, seats, price } = pickupModal
+    const pickupPoint = samplePickupPoints.find((p) => p.id === pickupId) || null
+    const dropoffPoint = sampleDropoffPoints.find((p) => p.id === dropoffId) || null
+
+    navigate('/checkout', {
+      state: {
+        trip,
+        seats,
+        totalPrice: price,
+        pickup: pickupPoint,
+        dropoff: dropoffPoint,
+        date: criteria.date,
+      },
+    })
+    setPickupModal(null)
+  }
+
+
+────────────────────────────────────────────────────────────────────────────────
+3. CẤU TRÚC FILE MỚI CẦN TẠO
+────────────────────────────────────────────────────────────────────────────────
+
+Tạo thư mục:
+  src/components/checkout/     (thư mục mới)
+
+Tất cả code của 9 file mới nằm trong gói file này (đã được attach riêng).
+
+────────────────────────────────────────────────────────────────────────────────
+4. LUỒNG HOẠT ĐỘNG
+────────────────────────────────────────────────────────────────────────────────
+
+SearchResults → chọn ghế → chọn điểm đón/trả → nhấn "Xác nhận đặt vé"
+  → navigate('/checkout', { state: { trip, seats, totalPrice, pickup, dropoff, date } })
+
+CheckoutPage (bước 1 - confirm):
+  ├─ CheckoutHeader   → logo, hotline, progress bar
+  ├─ ContactForm      → nhập tên, SĐT, email (có validate)
+  ├─ ExtrasPanel      → bảo hiểm, thuê xe máy
+  └─ TripSummary (cột phải) → tóm tắt + nút "Tiếp tục" (disabled nếu form chưa hợp lệ)
+
+CheckoutPage (bước 2 - payment):
+  ├─ CheckoutHeader   → có đồng hồ đếm ngược 9:37
+  ├─ PaymentMethods   → chọn phương thức (QR, MoMo, Zalo, Visa, ATM...)
+  └─ PaymentSummary (cột phải):
+       → mã giảm giá (demo: HIUSGO10, NEWUSER, HDSG50K)
+       → tóm tắt chuyến đi
+       → thông tin liên hệ + nút "Chỉnh sửa"
+       → cảnh báo không hoàn tiền
+       → nút "Thanh toán"
+
+BookingSuccess (bước 3):
+  → hiện mã đơn hàng, chi tiết chuyến, hướng dẫn tiếp theo
+  → nút Tải vé PDF, Về trang chủ
+  → gợi ý tạo tài khoản
+
+════════════════════════════════════════════════════════════════════════════════

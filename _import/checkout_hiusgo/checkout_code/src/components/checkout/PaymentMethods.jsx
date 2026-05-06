@@ -1,0 +1,128 @@
+import { FiCheck, FiChevronDown, FiChevronUp } from 'react-icons/fi'
+import { useState } from 'react'
+
+const PAYMENT_METHODS = [
+  {
+    id: 'qr',
+    label: 'QR chuyển khoản / Ví điện tử',
+    desc: 'Không cần nhập thông tin. Xác nhận thanh toán tức thì.',
+    emoji: '📱',
+    sub: ['MoMo', 'ZaloPay', 'ViettelPay', 'VNPay'],
+    promo: null,
+  },
+  {
+    id: 'momo',
+    label: 'Ví MoMo',
+    desc: 'Thanh toán qua ứng dụng MoMo',
+    emoji: '💜',
+    promo: 'Giảm 10% tối đa 30.000đ cho đơn từ 150.000đ',
+  },
+  {
+    id: 'zalopay',
+    label: 'Ví ZaloPay',
+    desc: 'Thanh toán qua ứng dụng ZaloPay',
+    emoji: '🔵',
+    promo: 'Giảm 15k cho đơn đầu tiên trong tháng',
+  },
+  {
+    id: 'shopeepay',
+    label: 'Ví ShopeePay',
+    desc: 'Liên kết ví ShopeePay để thanh toán',
+    emoji: '🟠',
+    promo: 'Hoàn xu 5% khi thanh toán qua ShopeePay',
+  },
+  {
+    id: 'vnpay',
+    label: 'VNPAY-QR',
+    desc: 'Quét mã QR từ ứng dụng ngân hàng hỗ trợ VNPAY',
+    emoji: '🏦',
+    promo: 'Mã HD Saigon: Giảm 50k cho đơn trên 250k',
+  },
+  {
+    id: 'atm',
+    label: 'Thẻ ATM / Internet Banking',
+    desc: 'Thanh toán qua thẻ nội địa hoặc Internet Banking',
+    emoji: '💳',
+    promo: null,
+  },
+  {
+    id: 'visa',
+    label: 'Thẻ quốc tế (Visa, MasterCard, JCB)',
+    desc: 'Thanh toán an toàn qua cổng thanh toán quốc tế',
+    emoji: '🌐',
+    promo: null,
+  },
+  {
+    id: 'onbus',
+    label: 'Thanh toán khi lên xe',
+    desc: 'Trả tiền mặt hoặc chuyển khoản trực tiếp cho tài xế',
+    emoji: '🚌',
+    promo: null,
+  },
+]
+
+export default function PaymentMethods({ selected, onChange }) {
+  const [showAll, setShowAll] = useState(false)
+  const displayed = showAll ? PAYMENT_METHODS : PAYMENT_METHODS.slice(0, 4)
+
+  return (
+    <div className="checkout-card checkout-payments">
+      <h2 className="checkout-card__title">💳 Phương thức thanh toán</h2>
+
+      <div className="checkout-payments__list">
+        {displayed.map((method) => (
+          <label
+            key={method.id}
+            className={`checkout-payment-item ${selected === method.id ? 'is-selected' : ''}`}
+            htmlFor={`pay-${method.id}`}
+          >
+            <span className="checkout-payment-item__emoji">{method.emoji}</span>
+            <div className="checkout-payment-item__body">
+              <div className="checkout-payment-item__row">
+                <span className="checkout-payment-item__label">{method.label}</span>
+                {method.sub && (
+                  <span className="checkout-payment-item__sub">{method.sub.join(' · ')}</span>
+                )}
+              </div>
+              <p className="checkout-payment-item__desc">{method.desc}</p>
+              {method.promo && (
+                <p className="checkout-payment-item__promo">🎁 {method.promo}</p>
+              )}
+            </div>
+            <span className="checkout-payment-item__radio">
+              {selected === method.id && <FiCheck />}
+            </span>
+            <input
+              id={`pay-${method.id}`}
+              type="radio"
+              name="paymentMethod"
+              value={method.id}
+              checked={selected === method.id}
+              onChange={() => onChange(method.id)}
+              className="checkout-payment-item__input"
+            />
+          </label>
+        ))}
+      </div>
+
+      {!showAll && PAYMENT_METHODS.length > 4 && (
+        <button
+          className="checkout-payments__show-more"
+          onClick={() => setShowAll(true)}
+          type="button"
+        >
+          <FiChevronDown /> Xem thêm {PAYMENT_METHODS.length - 4} phương thức
+        </button>
+      )}
+      {showAll && (
+        <button
+          className="checkout-payments__show-more"
+          onClick={() => setShowAll(false)}
+          type="button"
+        >
+          <FiChevronUp /> Thu gọn
+        </button>
+      )}
+    </div>
+  )
+}

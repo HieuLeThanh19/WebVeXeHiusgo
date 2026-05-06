@@ -405,7 +405,7 @@ const PickupModal = ({ trip, chosenSeats, totalPrice, inline = false, onClose, o
           <button
             className="pickup-modal__footer-btn"
             disabled={!pickup || !dropoff}
-            onClick={onConfirm}
+            onClick={() => onConfirm(pickup, dropoff)}
             type="button"
           >
             Xác nhận đặt vé
@@ -468,7 +468,7 @@ const SearchResults = ({ searchCriteria, embedded = false, onChangeSearch }) => 
   }, [embedded, pickupModal, seatModalTrip])
 
   const handleSeatConfirm = (seats, price) => {
-    setPickupModal({ trip: seatModalTrip, seats, price })
+    setPickupModal({ trip: seatModalTrip, seats, price, pickup: null, dropoff: null })
     setSeatModalTrip(null)
   }
 
@@ -477,10 +477,24 @@ const SearchResults = ({ searchCriteria, embedded = false, onChangeSearch }) => 
     setSeatModalTrip(trip)
   }
 
-  const handlePickupConfirm = () => {
+  const handlePickupConfirm = (pickupId, dropoffId) => {
+    if (!pickupModal) return
+    const { trip, seats, price } = pickupModal
+    const pickupPoint = samplePickupPoints.find((p) => p.id === pickupId) || null
+    const dropoffPoint = sampleDropoffPoints.find((p) => p.id === dropoffId) || null
+
+    navigate('/checkout', {
+      state: {
+        trip,
+        seats,
+        totalPrice: price,
+        pickup: pickupPoint,
+        dropoff: dropoffPoint,
+        date: criteria.date,
+      },
+    })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     setPickupModal(null)
-    setToast(true)
-    window.setTimeout(() => setToast(false), 3500)
   }
 
   const clearFilters = () => {

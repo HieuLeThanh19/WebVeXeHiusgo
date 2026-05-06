@@ -337,10 +337,15 @@
   // ── Cột thông tin chính ──
   &__info {
     padding: 16px 18px;
+    padding-left: 30px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     min-width: 0;
+
+    @media (max-width: 640px) {
+      padding-left: 22px;
+    }
   }
 
   &__operator-row {

@@ -1,14 +1,41 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/common/Header'
 import FloatingContactButtons from './components/common/FloatingContactButtons'
 import SiteFooter from './components/common/SiteFooterFixed'
+import ScrollToTop from './components/common/ScrollToTop'
+import PendingPaymentPopup from './components/common/PendingPaymentPopup'
 import Home from './pages/Home'
 import SearchResults from './pages/SearchResults'
 import AboutPage from './pages/AboutPage'
 import MyOrders from './pages/MyOrders'
+import CheckoutPage from './pages/CheckoutPage'
 import './styles/main.scss'
 import './styles/theme.scss'
+
+function AppLayout({ theme, onToggleTheme }) {
+  const location = useLocation()
+  const isCheckout = location.pathname === '/checkout'
+
+  return (
+    <div className="App">
+      <ScrollToTop />
+      <PendingPaymentPopup />
+      {!isCheckout && <Header theme={theme} onToggleTheme={onToggleTheme} />}
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+        </Routes>
+      </main>
+      <FloatingContactButtons />
+      <SiteFooter />
+    </div>
+  )
+}
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -31,19 +58,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Header theme={theme} onToggleTheme={handleToggleTheme} />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/my-orders" element={<MyOrders />} />
-          </Routes>
-        </main>
-        <FloatingContactButtons />
-        <SiteFooter />
-      </div>
+      <AppLayout theme={theme} onToggleTheme={handleToggleTheme} />
     </Router>
   )
 }

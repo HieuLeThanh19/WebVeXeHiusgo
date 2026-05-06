@@ -685,6 +685,13 @@ body[data-theme='light'] {
   --border-strong: rgba(31, 157, 143, 0.24);
   --shadow-soft: 0 12px 24px rgba(31, 41, 55, 0.08);
   --shadow-card: 0 24px 46px rgba(17, 53, 87, 0.12);
+
+  --brand-teal: #1f9d8f;
+  --brand-mint: #10b981;
+  --gradient-cta: linear-gradient(135deg, #2563eb 0%, #1f9d8f 100%);
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #dc2626;
 }
 
 body[data-theme='dark'] {
@@ -708,6 +715,13 @@ body[data-theme='dark'] {
   --border-strong: rgba(127, 224, 200, 0.28);
   --shadow-soft: 0 14px 28px rgba(2, 12, 18, 0.34);
   --shadow-card: 0 26px 52px rgba(2, 12, 18, 0.42);
+
+  --brand-teal: #7fe0c8;
+  --brand-mint: #6ee7b7;
+  --gradient-cta: linear-gradient(135deg, #2563eb 0%, #1f9d8f 100%);
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #fda4a4;
 }
 
 body {
